@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle Financeiro Bispo-Brito</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#14b8a6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Finanças AI">
+    <link rel="apple-touch-icon" href="icon.svg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+<script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.21.0",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/"
+  }
+}
+</script>
+</head>
+<body>
+    <div id="login-screen" class="active">
+        <div class="login-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
+                </div>
+                 <div class="logo-text">
+                    <div class="logo-title">Controle Financeiro</div>
+                    <div class="logo-subtitle">Bispo • Brito</div>
+                </div>
+            </div>
+            <h2>Acesse suas finanças com segurança</h2>
+            <p>Entre com sua conta Google para sincronizar seus dados na nuvem.</p>
+            <button id="login-button-prompt" class="btn btn-large">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M21.35,11.1H12.18V13.83H18.69C18.36,17.64 15.19,19.27 12.19,19.27C8.36,19.27 5,16.25 5,12C5,7.9 8.2,4.73 12.19,4.73C15.29,4.73 17.1,6.7 17.1,6.7L19,4.72C19,4.72 16.56,2 12.19,2C6.42,2 2.03,6.8 2.03,12C2.03,17.05 6.16,22 12.19,22C17.6,22 21.5,18.33 21.5,12.33C21.5,11.76 21.35,11.1 21.35,11.1V11.1Z"></path></svg>
+                Entrar com Google
+            </button>
+        </div>
+    </div>
+
+    <div id="app-container" class="hidden">
+        <header class="header">
+            <div class="logo">
+                 <div class="logo-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
+                </div>
+            </div>
+            <div class="header-controls">
+                <div class="month-selector">
+                    <button id="prevMonthBtn" class="month-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    </button>
+                    <div class="month-display" id="monthDisplay">Outubro 2025</div>
+                    <button id="nextMonthBtn" class="month-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <main id="main-content">
+            <div id="app-views">
+                <div id="view-home" class="app-view">
+                    <div class="summary-grid">
+                        <div class="summary-card income">
+                            <div class="summary-header"><div class="summary-title">Entradas Totais</div><div class="summary-icon"></div></div>
+                            <div class="summary-value" id="totalIncome">R$ 0,00</div>
+                        </div>
+                        <div class="summary-card expense">
+                            <div class="summary-header"><div class="summary-title">Despesas Totais</div><div class="summary-icon"></div></div>
+                            <div class="summary-value" id="totalExpenses">R$ 0,00</div>
+                        </div>
+                        <div class="summary-card pending">
+                            <div class="summary-header"><div class="summary-title">Pendências</div><div class="summary-icon"></div></div>
+                            <div class="summary-value" id="totalPending">R$ 0,00</div>
+                        </div>
+                        <div class="summary-card balance">
+                            <div class="summary-header"><div class="summary-title">Saldo Final</div><div class="summary-icon"></div></div>
+                            <div class="summary-value" id="totalBalance">R$ 0,00</div>
+                        </div>
+                    </div>
+                    <div class="ai-section">
+                        <button class="ai-button" id="openAiModalBtn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-1.2 0-2.4.6-3 1.7A3.6 3.6 0 0 0 8.3 9c.5 1.1 1.4 2 2.7 2s2.2-.9 2.7-2c.1-.4.2-.8.3-1.3.6-1.1 0-2.3-1-3.1-.3-.2-.6-.3-1-.3z"></path><path d="M12 21c-1.2 0-2.4-.6-3-1.7A3.6 3.6 0 0 1 8.3 15c.5-1.1 1.4-2 2.7-2s2.2.9 2.7 2c.1.4.2.8.3 1.3.6 1.1 0 2.3-1 3.1-.3.2-.6.3-1 .3z"></path><path d="M3 12c0-1.2.6-2.4 1.7-3A3.6 3.6 0 0 1 9 8.3c1.1.5 2 1.4 2 2.7s-.9 2.2-2 2.7c-.4.1-.8.2-1.3.3-1.1.6-2.3 0-3.1-1-.2-.3-.3-.6-.3-1z"></path><path d="M21 12c0-1.2-.6-2.4-1.7-3A3.6 3.6 0 0 0 15 8.3c-1.1.5-2 1.4-2 2.7s.9 2.2 2 2.7c.4.1.8.2 1.3.3 1.1.6 2.3 0 3.1-1 .2-.3.3-.6-.3-1z"></path></svg>
+                            Conversar com IA Financeira
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="m22 2-11 11"></path></svg>
+                        </button>
+                    </div>
+                    <section class="section">
+                        <div class="section-header"><h2 class="section-title">Visão Geral</h2></div>
+                        <div class="chart-container" id="overviewChart"></div>
+                    </section>
+                </div>
+
+                <div id="view-lancamentos" class="app-view">
+                    <div class="segmented-control">
+                        <button class="segmented-btn active" data-list="incomesList">Entradas</button>
+                        <button class="segmented-btn" data-list="expensesList">Despesas</button>
+                        <button class="segmented-btn" data-list="shoppingList">Compras</button>
+                    </div>
+                    <div class="lists-container">
+                         <div id="list-actions">
+                             <button class="btn" id="openAddIncomeModalBtn">
+                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                 Nova Entrada
+                             </button>
+                             <button class="btn" id="openAddExpenseModalBtn" style="display: none;">
+                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                 Nova Despesa
+                             </button>
+                              <button class="btn" id="openAddShoppingModalBtn" style="display: none;">
+                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                 Nova Compra
+                             </button>
+                         </div>
+                        <div class="items-list-wrapper">
+                            <div class="items-list" id="incomesList"></div>
+                            <div class="items-list" id="expensesList" style="display: none;"></div>
+                            <div class="items-list" id="shoppingList" style="display: none;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="view-metas" class="app-view">
+                     <div class="section">
+                         <div class="section-header">
+                             <h2 class="section-title">Metas de Gastos</h2>
+                             <button class="btn" id="openAddGoalModalBtn">
+                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                 Adicionar Meta
+                             </button>
+                         </div>
+                         <div id="goalsList" class="goals-list">
+                             </div>
+                     </div>
+                </div>
+
+                <div id="view-perfil" class="app-view">
+                    <div class="profile-card">
+                        <div class="profile-header">
+                            <div class="profile-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></path><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                            </div>
+                            <div id="profile-info">
+                                </div>
+                        </div>
+                        <button id="logout-button" class="btn btn-secondary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                            Sair da Conta
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <footer class="app-footer">
+                Desenvolvido por André Brito | Versão 1.2
+            </footer>
+        </main>
+        
+        <nav id="tab-bar">
+            <button class="tab-btn active" data-view="home">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <span>Início</span>
+            </button>
+            <button class="tab-btn" data-view="lancamentos">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
+                <span>Lançamentos</span>
+            </button>
+            <button class="tab-btn" data-view="metas">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                <span>Metas</span>
+            </button>
+            <button class="tab-btn" data-view="perfil">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <span>Perfil</span>
+            </button>
+        </nav>
+    </div>
+
+    <div class="modal" id="googleSignInModal">
+        <div class="modal-content google-signin-modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Escolha uma conta</h3>
+                <button class="close-btn" id="closeGoogleSignInModalBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="google-signin-subtitle">para continuar para Controle Financeiro</div>
+            <div id="googleAccountsList">
+                <div class="google-account-item" data-user-id="marcelly">
+                    <div class="google-account-info">
+                        <div class="google-account-name">Família Bispo Brito</div>
+                        <div class="google-account-email">bispobrito@gmail.com</div>
+                    </div>
+                </div>
+            </div>
+            <div class="google-signin-footer">
+                Para continuar, o Google compartilhará seu nome, endereço de e-mail e foto do perfil.
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="addModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="addModalTitle">Adicionar Item</h3>
+                <button class="close-btn" id="closeAddModalBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <form id="addForm">
+                <div class="form-group">
+                    <label class="form-label" for="description">Descrição</label>
+                    <input type="text" class="form-input" id="description" required placeholder="Ex: Salário, Aluguel, Mercado...">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="amount">Valor (R$)</label>
+                        <input type="text" class="form-input" id="amount" inputmode="decimal" required placeholder="R$ 0,00">
+                    </div>
+                    <div class="form-group" id="dueDateGroup">
+                        <label class="form-label icon-label" for="dueDate">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                            Vencimento
+                        </label>
+                        <input type="date" class="form-input" id="dueDate">
+                    </div>
+                </div>
+                <div class="form-group" id="categoryGroup" style="display: none;">
+                    <label class="form-label" for="category">Categoria de Gasto</label>
+                    <select class="form-input form-select" id="category">
+                        </select>
+                </div>
+                 <div class="form-group" id="typeGroup" style="display: none;">
+                    <label class="form-label" for="type">Tipo de Despesa</label>
+                    <select class="form-input form-select" id="type">
+                        <option value="variable">Variável</option>
+                        <option value="fixed">Fixa (Parcelada)</option>
+                    </select>
+                </div>
+                <div class="form-row" id="installmentsGroup" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label" for="currentInstallment">Parcela Atual</label>
+                        <input type="number" class="form-input" id="currentInstallment" value="1" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="totalInstallments">Total de Parcelas</label>
+                        <input type="number" class="form-input" id="totalInstallments" value="1" min="1">
+                    </div>
+                </div>
+                <div class="form-group form-group-checkbox" id="cyclicGroup" style="display: none;">
+                    <input type="checkbox" id="cyclic" name="cyclic">
+                    <label for="cyclic">Esta despesa é cíclica? (Ex: Aluguel, Internet)</label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelAddBtn">Cancelar</button>
+                    <button type="submit" class="btn">Adicionar Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="editModalTitle">Editar Item</h3>
+                <button class="close-btn" id="closeEditModalBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <form id="editForm">
+                <input type="hidden" id="editItemId">
+                <input type="hidden" id="editItemType">
+                <div class="form-group">
+                    <label class="form-label" for="editDescription">Descrição</label>
+                    <input type="text" class="form-input" id="editDescription" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="editAmount">Valor (R$)</label>
+                        <input type="text" class="form-input" id="editAmount" inputmode="decimal" required>
+                    </div>
+                     <div class="form-group" id="editDueDateGroup">
+                        <label class="form-label" for="editDueDate">Data de Vencimento</label>
+                        <input type="date" class="form-input" id="editDueDate">
+                    </div>
+                </div>
+                <div class="form-group" id="editCategoryGroup" style="display: none;">
+                    <label class="form-label" for="editCategory">Categoria de Gasto</label>
+                    <select class="form-input form-select" id="editCategory">
+                        </select>
+                </div>
+                <div class="form-group" id="editPaidDateGroup" style="display: none;">
+                    <label class="form-label icon-label" for="editPaidDate">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"></path><path d="M16 2v4"></path><path d="M21 13V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8"></path><path d="M3 10h18"></path><path d="m16 20 2 2 4-4"></path></svg>
+                        Data de Pagamento
+                    </label>
+                    <input type="date" class="form-input" id="editPaidDate">
+                </div>
+                <div class="form-row" id="editInstallmentsGroup">
+                    <div class="form-group">
+                        <label class="form-label" for="editCurrentInstallment">Parcela Atual</label>
+                        <input type="number" class="form-input" id="editCurrentInstallment" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="editTotalInstallments">Total de Parcelas</label>
+                        <input type="number" class="form-input" id="editTotalInstallments" min="1">
+                    </div>
+                </div>
+                 <div class="form-info" id="editInstallmentsInfo" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                    <span>Editar as parcelas ajuda a corrigir o histórico de pagamentos.</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelEditBtn">Cancelar</button>
+                    <button type="submit" class="btn">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+     <div class="modal" id="goalModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="goalModalTitle"></h3>
+                <button class="close-btn" id="closeGoalModalBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <form id="goalForm">
+                 <input type="hidden" id="goalId">
+                <div class="form-group">
+                    <label class="form-label" for="goalCategory">Categoria</label>
+                    <select class="form-input form-select" id="goalCategory" required>
+                         </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="goalAmount">Valor da Meta (R$)</label>
+                    <input type="text" class="form-input" id="goalAmount" inputmode="decimal" required placeholder="R$ 0,00">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelGoalBtn">Cancelar</button>
+                    <button type="submit" class="btn">Salvar Meta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="aiModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="aiModalTitle">Análise Financeira IA</h3>
+                <button class="close-btn" id="closeAiModalBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div id="aiAnalysis">
+                </div>
+            <div class="modal-footer ai-footer">
+                <form id="aiChatForm">
+                    <input type="text" id="aiChatInput" class="form-input" placeholder="Pergunte sobre suas finanças..." autocomplete="off">
+                    <button type="submit" class="btn" id="aiChatSendBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="m22 2-11 11"></path></svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div id="pwa-install-banner" class="pwa-install-banner">
+        <div class="pwa-install-banner-content">
+            <img src="icon.svg" alt="App Icon" class="pwa-install-icon">
+            <div class="pwa-install-text">
+                <strong>Instale o App</strong>
+                <span>Acesse rápido e offline.</span>
+            </div>
+            <button id="pwa-install-btn" class="btn">Instalar</button>
+            <button id="pwa-dismiss-btn" class="close-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+    </div>
+
+    <script type="module" src="index.tsx"></script>
+</body>
+</html>
