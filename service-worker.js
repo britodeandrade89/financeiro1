@@ -1,5 +1,5 @@
 // @ts-nocheck
-const CACHE_NAME = 'finance-app-v6'; // Incremented version to apply the fix
+const CACHE_NAME = 'finance-app-v7'; // Incremented version to apply the fix
 
 // All assets needed for the app shell to function offline.
 const ASSETS_TO_CACHE = [

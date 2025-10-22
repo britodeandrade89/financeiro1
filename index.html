@@ -96,6 +96,22 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="m22 2-11 11"></path></svg>
                         </button>
                     </div>
+
+                    <section id="bank-accounts-section" class="section">
+                        <div class="section-header">
+                            <h2 class="section-title">Saldos em Conta</h2>
+                            <button class="btn" id="openAddAccountModalBtn">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                Adicionar Conta
+                            </button>
+                        </div>
+                        <div id="bankAccountsList"></div>
+                        <div id="accounts-total-container" class="accounts-total">
+                            <span>Total em Contas:</span>
+                            <span id="accounts-total-amount">R$ 0,00</span>
+                        </div>
+                    </section>
+                    
                     <section class="section">
                         <div class="section-header"><h2 class="section-title">Visão Geral</h2></div>
                         <div class="chart-container" id="overviewChart"></div>
@@ -350,6 +366,32 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" id="cancelGoalBtn">Cancelar</button>
                     <button type="submit" class="btn">Salvar Meta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="modal" id="accountModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="accountModalTitle"></h3>
+                <button class="close-btn" id="closeAccountModalBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <form id="accountForm">
+                <input type="hidden" id="accountId">
+                <div class="form-group">
+                    <label class="form-label" for="accountName">Nome da Conta</label>
+                    <input type="text" class="form-input" id="accountName" required placeholder="Ex: Conta Nubank, Caixa...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="accountBalance">Saldo Atual (R$)</label>
+                    <input type="text" class="form-input" id="accountBalance" inputmode="decimal" required placeholder="R$ 0,00">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelAccountBtn">Cancelar</button>
+                    <button type="submit" class="btn">Salvar Conta</button>
                 </div>
             </form>
         </div>

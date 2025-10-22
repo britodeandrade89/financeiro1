@@ -92,6 +92,10 @@ const octoberData = {
         { id: "goal_3", category: "transporte", amount: 1000 },
         { id: "goal_4", category: "dividas", amount: 1500 },
         { id: "goal_5", category: "lazer", amount: 600 },
+    ],
+    bankAccounts: [
+        { id: "acc_1", name: "Conta Principal", balance: 1500.75 },
+        { id: "acc_2", name: "Poupança", balance: 5000.00 },
     ]
 };
 
@@ -239,7 +243,7 @@ mockFirebase.firestore.data = JSON.parse(localStorage.getItem('firestoreMock')) 
 // =================================================================================
 // STATE
 // =================================================================================
-let currentMonthData = { incomes: [], expenses: [], shoppingItems: [], goals: [] };
+let currentMonthData = { incomes: [], expenses: [], shoppingItems: [], goals: [], bankAccounts: [] };
 let firestoreUnsubscribe = null; // Para gerenciar o listener em tempo real
 let currentModalType = '';
 let currentMonth = new Date().getMonth() + 1;
@@ -262,6 +266,7 @@ const elements = {
     expensesList: document.getElementById('expensesList'),
     shoppingList: document.getElementById('shoppingList'),
     goalsList: document.getElementById('goalsList'),
+    bankAccountsList: document.getElementById('bankAccountsList'),
     overviewChart: document.getElementById('overviewChart'),
     // Auth & Layout
     appContainer: document.getElementById('app-container'),
@@ -272,6 +277,7 @@ const elements = {
     editModal: document.getElementById('editModal'),
     aiModal: document.getElementById('aiModal'),
     goalModal: document.getElementById('goalModal'),
+    accountModal: document.getElementById('accountModal'),
     // Add Modal
     addModalTitle: document.getElementById('addModalTitle'),
     addForm: document.getElementById('addForm'),
@@ -307,6 +313,12 @@ const elements = {
     goalId: document.getElementById('goalId'),
     goalCategory: document.getElementById('goalCategory'),
     goalAmount: document.getElementById('goalAmount'),
+    // Account Modal
+    accountModalTitle: document.getElementById('accountModalTitle'),
+    accountForm: document.getElementById('accountForm'),
+    accountId: document.getElementById('accountId'),
+    accountName: document.getElementById('accountName'),
+    accountBalance: document.getElementById('accountBalance'),
     // Profile
     profileInfo: document.getElementById('profile-info'),
     // Tab & View Navigation
@@ -527,7 +539,7 @@ async function createNewMonthData() {
         } else if (prevMonth === 10 && prevYear === 2025) {
             baseData = octoberData;
         } else {
-             baseData = { incomes: [], expenses: [], shoppingItems: [], goals: [] };
+             baseData = { incomes: [], expenses: [], shoppingItems: [], goals: [], bankAccounts: [] };
         }
     }
     
@@ -535,7 +547,8 @@ async function createNewMonthData() {
         incomes: [],
         expenses: [],
         shoppingItems: [],
-        goals: JSON.parse(JSON.stringify(baseData.goals || [])) // Carry over goals
+        goals: JSON.parse(JSON.stringify(baseData.goals || [])), // Carry over goals
+        bankAccounts: JSON.parse(JSON.stringify(baseData.bankAccounts || [])) // Carry over bank accounts
     };
 
     const recurringIncomes = baseData.incomes.filter(income => 
@@ -603,7 +616,7 @@ function changeMonth(offset) {
 }
 
 function clearData() {
-    currentMonthData = { incomes: [], expenses: [], shoppingItems: [], goals: [] };
+    currentMonthData = { incomes: [], expenses: [], shoppingItems: [], goals: [], bankAccounts: [] };
 }
 
 
@@ -673,6 +686,7 @@ function updateUI() {
     renderList('expenses', elements.expensesList, createExpenseItem, "Nenhuma despesa registrada", ICONS.expense, true);
     renderList('shoppingItems', elements.shoppingList, createShoppingItem, "Nenhuma compra registrada", ICONS.shopping);
     renderGoalsPage();
+    renderBankAccounts();
     renderOverviewChart();
 }
 
@@ -1153,6 +1167,104 @@ function deleteGoal(id) {
 
 
 // =================================================================================
+// BANK ACCOUNTS FEATURE
+// =================================================================================
+function renderBankAccounts() {
+    const accounts = currentMonthData.bankAccounts || [];
+    const listEl = elements.bankAccountsList;
+    listEl.innerHTML = '';
+
+    if (accounts.length === 0) {
+        listEl.innerHTML = `<div class="empty-state-small">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+            <span>Adicione suas contas para ver os saldos.</span>
+        </div>`;
+        document.getElementById('accounts-total-container').style.display = 'none';
+        return;
+    }
+
+    document.getElementById('accounts-total-container').style.display = 'flex';
+    const totalBalance = accounts.reduce((sum, acc) => sum + acc.balance, 0);
+    document.getElementById('accounts-total-amount').textContent = formatCurrency(totalBalance);
+
+    accounts.forEach(acc => {
+        const item = document.createElement('div');
+        item.className = 'account-item';
+        item.onclick = () => openAccountModal(acc.id);
+        item.innerHTML = `
+            <div class="account-details">
+                <div class="account-name">${acc.name}</div>
+                <div class="account-balance">${formatCurrency(acc.balance)}</div>
+            </div>
+            <div class="account-actions">
+                <button class="action-btn edit-btn" title="Editar Saldo">${ICONS.edit}</button>
+                <button class="action-btn delete-btn" title="Excluir Conta">${ICONS.delete}</button>
+            </div>
+        `;
+        item.querySelector('.delete-btn').onclick = (e) => { e.stopPropagation(); deleteAccount(acc.id); };
+        listEl.appendChild(item);
+    });
+}
+
+function openAccountModal(id = null) {
+    elements.accountForm.reset();
+    const existingAccount = id ? (currentMonthData.bankAccounts || []).find(a => a.id === id) : null;
+
+    if (existingAccount) {
+        elements.accountModalTitle.innerHTML = `${ICONS.edit} Editar Saldo da Conta`;
+        elements.accountId.value = existingAccount.id;
+        elements.accountName.value = existingAccount.name;
+        elements.accountBalance.value = formatCurrency(existingAccount.balance);
+    } else {
+        elements.accountModalTitle.innerHTML = `${ICONS.add} Adicionar Conta Bancária`;
+        elements.accountId.value = '';
+    }
+    openModal(elements.accountModal);
+}
+
+function closeAccountModal() {
+    closeModal(elements.accountModal);
+}
+
+function handleSaveAccount(event) {
+    event.preventDefault();
+    const id = elements.accountId.value;
+    const name = elements.accountName.value.trim();
+    const balance = parseCurrency(elements.accountBalance.value);
+
+    if (!name || isNaN(balance)) {
+        alert('Por favor, preencha o nome da conta e um saldo válido.');
+        return;
+    }
+    
+    if (!currentMonthData.bankAccounts) currentMonthData.bankAccounts = [];
+
+    if (id) { // Editing
+        const account = currentMonthData.bankAccounts.find(a => a.id === id);
+        if (account) {
+            account.name = name;
+            account.balance = balance;
+        }
+    } else { // Adding
+        const newAccount = { id: `acc_${Date.now()}`, name, balance };
+        currentMonthData.bankAccounts.push(newAccount);
+    }
+
+    updateUI();
+    saveData();
+    closeAccountModal();
+}
+
+function deleteAccount(id) {
+    if (confirm('Tem certeza que deseja excluir esta conta?')) {
+        currentMonthData.bankAccounts = (currentMonthData.bankAccounts || []).filter(a => a.id !== id);
+        updateUI();
+        saveData();
+    }
+}
+
+
+// =================================================================================
 // AI ANALYSIS & CHAT
 // =================================================================================
 function openAiModal() {
@@ -1392,7 +1504,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const amountInputs = [
         document.getElementById('amount'), 
         document.getElementById('editAmount'),
-        document.getElementById('goalAmount')
+        document.getElementById('goalAmount'),
+        document.getElementById('accountBalance')
     ];
     amountInputs.forEach(input => {
         if (input) {
@@ -1422,6 +1535,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('openAddExpenseModalBtn').addEventListener('click', () => openAddModal('expense'));
     document.getElementById('openAddShoppingModalBtn').addEventListener('click', () => openAddModal('shopping'));
     document.getElementById('openAddGoalModalBtn').addEventListener('click', () => openGoalModal());
+    document.getElementById('openAddAccountModalBtn').addEventListener('click', () => openAccountModal());
 
     // Tab Navigation
     elements.tabBar.addEventListener('click', (e) => {
@@ -1457,11 +1571,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('closeAiModalBtn').addEventListener('click', closeAiModal);
     document.getElementById('closeGoalModalBtn').addEventListener('click', closeGoalModal);
     document.getElementById('cancelGoalBtn').addEventListener('click', closeGoalModal);
+    document.getElementById('closeAccountModalBtn').addEventListener('click', closeAccountModal);
+    document.getElementById('cancelAccountBtn').addEventListener('click', closeAccountModal);
 
     // Form submission listeners
     elements.addForm.addEventListener('submit', handleAddItem);
     elements.editForm.addEventListener('submit', handleEditItem);
     elements.goalForm.addEventListener('submit', handleSaveGoal);
+    elements.accountForm.addEventListener('submit', handleSaveAccount);
 
     // Dynamic form logic
     document.getElementById('type').addEventListener('change', (e) => {

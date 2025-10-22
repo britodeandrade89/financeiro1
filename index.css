@@ -837,6 +837,17 @@ body {
     text-align: center;
     gap: 1rem;
 }
+.empty-state-small {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
 .chart-container .chart-placeholder {
     padding: 1rem;
     font-size: 0.9rem;
@@ -1165,6 +1176,61 @@ body {
 }
 
 
+/* Bank Accounts Section */
+#bankAccountsList {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem;
+}
+.account-item {
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    transition: background-color 0.2s ease;
+}
+.account-item:last-child {
+    border-bottom: none;
+}
+.account-item:hover {
+    background-color: var(--background);
+}
+.account-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+.account-name {
+    font-weight: 500;
+    font-size: 1rem;
+}
+.account-balance {
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: var(--primary-light);
+}
+.account-actions {
+    display: flex;
+    align-items: center;
+}
+.accounts-total {
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    background-color: var(--background);
+}
+#accounts-total-amount {
+    color: var(--success);
+    font-size: 1.3rem;
+}
+
+
 /* PWA Install Banner */
 .pwa-install-banner {
     display: none; /* Hidden by default */
@@ -1256,5 +1322,13 @@ body {
     }
     #pwa-install-btn {
         padding: 0.75rem 1rem;
+    }
+    .account-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    .account-actions {
+        align-self: flex-end;
     }
 }
