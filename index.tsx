@@ -1,5 +1,4 @@
 // @ts-nocheck
-import { GoogleGenAI } from "@google/genai";
 
 // =================================================================================
 // ICONS & CATEGORIES
@@ -235,11 +234,6 @@ mockFirebase.firestore.data = JSON.parse(localStorage.getItem('firestoreMock')) 
         data: octoberData
     }
 };
-
-// =================================================================================
-// GEMINI API
-// =================================================================================
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 
 // =================================================================================
@@ -1200,42 +1194,11 @@ async function handleAiChatSubmit(event) {
     
     appendTypingIndicator();
 
-    try {
-        const totalIncome = currentMonthData.incomes.reduce((sum, item) => sum + item.amount, 0);
-        const allExpenses = [...currentMonthData.expenses, ...currentMonthData.shoppingItems];
-        const totalExpenses = allExpenses.reduce((sum, item) => sum + item.amount, 0);
-        const balance = totalIncome - totalExpenses;
-
-        const financialContext = `
-            Dados financeiros para ${getMonthName(currentMonth)} de ${currentYear}:
-            - Entradas Totais: ${formatCurrency(totalIncome)}
-            - Despesas Totais: ${formatCurrency(totalExpenses)}
-            - Saldo Atual: ${formatCurrency(balance)}
-            - Metas de Gastos: ${JSON.stringify(currentMonthData.goals)}
-            - Detalhes das Entradas: ${JSON.stringify(currentMonthData.incomes)}
-            - Detalhes das Despesas e Compras: ${JSON.stringify(allExpenses)}
-        `;
-
-        const systemInstruction = "Você é a 'IA Financeira', uma assistente amigável e especialista em finanças para a família Bispo Brito. Sua missão é ajudá-los a entender suas finanças, identificar oportunidades de economia e oferecer orientações práticas sobre saúde financeira, tudo em português do Brasil. Analise os dados fornecidos e responda às perguntas do usuário de forma clara, encorajadora e acionável. Evite jargões complexos. Importante: Você não é uma conselheira financeira certificada; suas sugestões são para fins educacionais e baseadas nos dados apresentados. Use formatação Markdown (negrito, listas) para melhorar a legibilidade.";
-
-        const fullPrompt = `${financialContext}\n\n**Pergunta do usuário:** ${userInput}`;
-
-        const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
-            contents: fullPrompt,
-            config: {
-                systemInstruction: systemInstruction,
-            },
-        });
-        
+    // Simulate a delay and show a message that the feature is disabled.
+    setTimeout(() => {
         removeTypingIndicator();
-        appendChatMessage('ai', response.text);
-
-    } catch (error) {
-        console.error("AI Chat Error:", error);
-        removeTypingIndicator();
-        appendChatMessage('ai', 'Desculpe, ocorreu um erro ao processar sua pergunta. Por favor, tente novamente.');
-    }
+        appendChatMessage('ai', 'Desculpe, a funcionalidade de IA está temporariamente desativada.');
+    }, 800);
 }
 
 function appendChatMessage(role, text) {
