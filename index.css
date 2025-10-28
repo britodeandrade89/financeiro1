@@ -893,6 +893,34 @@ body {
     .header-controls { flex-direction: column-reverse; width: 100%; }
 }
 
+/* API Key Modal Styles */
+.modal-description {
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+#apiKeyModal .modal-content {
+    max-width: 450px;
+}
+#apiKeyForm {
+    padding: 2.5rem;
+}
+#apiKeyModal .modal-footer {
+    padding: 0;
+    margin-top: 2rem;
+}
+.form-info a {
+    color: var(--primary-light);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+.form-info a:hover {
+    color: var(--primary);
+    text-decoration: underline;
+}
+
 /* AI Analysis Modal Chat */
 #aiAnalysis {
     flex-grow: 1;

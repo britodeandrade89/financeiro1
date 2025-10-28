@@ -279,6 +279,7 @@ const elements = {
     aiModal: document.getElementById('aiModal'),
     goalModal: document.getElementById('goalModal'),
     accountModal: document.getElementById('accountModal'),
+    apiKeyModal: document.getElementById('apiKeyModal'),
     // Add Modal
     addModalTitle: document.getElementById('addModalTitle'),
     addForm: document.getElementById('addForm'),
@@ -308,6 +309,9 @@ const elements = {
     aiModalTitle: document.getElementById('aiModalTitle'),
     aiChatForm: document.getElementById('aiChatForm'),
     aiChatInput: document.getElementById('aiChatInput'),
+    // API Key Modal
+    apiKeyForm: document.getElementById('apiKeyForm'),
+    apiKeyInput: document.getElementById('apiKeyInput'),
     // Goal Modal
     goalModalTitle: document.getElementById('goalModalTitle'),
     goalForm: document.getElementById('goalForm'),
@@ -1268,11 +1272,9 @@ function deleteAccount(id) {
 // =================================================================================
 // AI ANALYSIS & CHAT
 // =================================================================================
-async function openAiModal() {
-    elements.aiModalTitle.innerHTML = `${ICONS.aiAnalysis} IA Financeira`;
+async function initializeAndStartChat(apiKey) {
     openModal(elements.aiModal);
-
-    // Set a unified loading state
+    elements.aiModalTitle.innerHTML = `${ICONS.aiAnalysis} IA Financeira`;
     elements.aiAnalysis.innerHTML = `
         <div id="ai-loading-state" class="loading">
             <div class="spinner"></div>
@@ -1280,16 +1282,13 @@ async function openAiModal() {
         </div>
     `;
 
-    // Disable form until chat is ready
     elements.aiChatInput.disabled = true;
     document.getElementById('aiChatSendBtn').disabled = true;
     elements.aiChatInput.placeholder = "Inicializando IA...";
-
-    // Ensure previous event listener is removed before adding a new one
     elements.aiChatForm.removeEventListener('submit', handleAiChatSubmit);
 
     try {
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        const ai = new GoogleGenAI({ apiKey });
 
         chat = ai.chats.create({
             model: 'gemini-2.5-pro',
@@ -1320,10 +1319,9 @@ async function openAiModal() {
         let firstChunk = true;
         for await (const chunk of responseStream) {
             if (firstChunk) {
-                // On the first chunk, replace the loading state with the chart and message bubble
                 const pieChartHTML = createPieChart();
-                elements.aiAnalysis.innerHTML = pieChartHTML; // Render chart first
-                elements.aiAnalysis.appendChild(aiMessageEl); // Then append the message bubble
+                elements.aiAnalysis.innerHTML = pieChartHTML;
+                elements.aiAnalysis.appendChild(aiMessageEl);
                 firstChunk = false;
             }
             fullResponseText += chunk.text;
@@ -1331,7 +1329,6 @@ async function openAiModal() {
             elements.aiAnalysis.scrollTop = elements.aiAnalysis.scrollHeight;
         }
 
-        // Chat is ready
         elements.aiChatInput.disabled = false;
         document.getElementById('aiChatSendBtn').disabled = false;
         elements.aiChatInput.placeholder = "Pergunte sobre suas finanças...";
@@ -1339,30 +1336,38 @@ async function openAiModal() {
 
     } catch (error) {
         console.error("Error initializing AI Chat:", error);
-        elements.aiAnalysis.innerHTML = ''; // Clear loading state on error
-        appendChatMessage('ai', 'Ocorreu um erro ao inicializar a IA. Por favor, verifique sua conexão ou tente novamente mais tarde.');
+        sessionStorage.removeItem('geminiApiKey'); // Clear invalid key
+        elements.aiAnalysis.innerHTML = '';
+        appendChatMessage('ai', 'Ocorreu um erro ao inicializar a IA. Verifique sua chave de API e a conexão, ou tente novamente mais tarde.');
         elements.aiChatInput.placeholder = "Erro ao conectar com a IA";
     }
 
     elements.aiChatForm.addEventListener('submit', handleAiChatSubmit);
 }
 
+async function openAiModal() {
+    const apiKey = sessionStorage.getItem('geminiApiKey');
+    if (!apiKey) {
+        openModal(elements.apiKeyModal);
+        return;
+    }
+    await initializeAndStartChat(apiKey);
+}
+
+async function handleApiKeySubmit(event) {
+    event.preventDefault();
+    const apiKey = elements.apiKeyInput.value.trim();
+    if (apiKey) {
+        sessionStorage.setItem('geminiApiKey', apiKey);
+        closeModal(elements.apiKeyModal);
+        await initializeAndStartChat(apiKey);
+    }
+}
 
 function closeAiModal() {
     closeModal(elements.aiModal);
     elements.aiChatForm.removeEventListener('submit', handleAiChatSubmit);
     chat = null; // Clean up chat session
-}
-
-function renderInitialAiView() {
-    const pieChartHTML = createPieChart();
-    elements.aiAnalysis.innerHTML = `
-        <div id="chat-initial-view">
-            ${pieChartHTML}
-            <h4>Olá! Sou sua assistente financeira.</h4>
-            <p>Seus dados de ${getMonthName(currentMonth)} estão prontos para análise. Pergunte-me qualquer coisa sobre como economizar, planejar sua viagem ou entender seus gastos!</p>
-        </div>
-    `;
 }
 
 async function handleAiChatSubmit(event) {
@@ -1374,7 +1379,6 @@ async function handleAiChatSubmit(event) {
     const userInput = elements.aiChatInput.value.trim();
     if (!userInput) return;
 
-    // Clear initial view if it exists
     const initialView = document.getElementById('chat-initial-view');
     if (initialView) initialView.remove();
     
@@ -1385,7 +1389,6 @@ async function handleAiChatSubmit(event) {
     elements.aiChatInput.disabled = true;
     sendButton.disabled = true;
     
-    // Create the AI message element and bubble for streaming
     const aiMessageEl = document.createElement('div');
     aiMessageEl.className = `chat-message ai-message`;
     const aiBubbleEl = document.createElement('div');
@@ -1393,7 +1396,6 @@ async function handleAiChatSubmit(event) {
     aiMessageEl.appendChild(aiBubbleEl);
     elements.aiAnalysis.appendChild(aiMessageEl);
 
-    // Add a temporary typing indicator inside the bubble
     aiBubbleEl.innerHTML = `
         <div class="typing-indicator">
             <div class="dot"></div>
@@ -1670,6 +1672,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     elements.editForm.addEventListener('submit', handleEditItem);
     elements.goalForm.addEventListener('submit', handleSaveGoal);
     elements.accountForm.addEventListener('submit', handleSaveAccount);
+    elements.apiKeyForm.addEventListener('submit', handleApiKeySubmit);
 
     // Dynamic form logic
     document.getElementById('type').addEventListener('change', (e) => {
