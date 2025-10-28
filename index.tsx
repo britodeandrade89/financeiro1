@@ -602,6 +602,31 @@ async function createNewMonthData() {
             });
         });
 
+    // Specific adjustments for November 2025 as requested by the user
+    if (currentYear === 2025 && currentMonth === 11) {
+        // 1. Ensure vacation pay is removed (as per user request)
+        // Note: The main logic already excludes it, but this is an explicit safeguard.
+        newMonthData.incomes = newMonthData.incomes.filter(inc => !inc.description.toUpperCase().includes('FÉRIAS'));
+
+        // 2. Add the new car repair expense installment
+        const carRepairExists = newMonthData.expenses.some(e => e.description.includes("CONSERTO DE CARRO"));
+        if (!carRepairExists) {
+             newMonthData.expenses.push({
+                id: `exp_car_repair_${Date.now()}`,
+                description: "CONSERTO DE CARRO (MARCIA BRITO)",
+                amount: 361.75, // (891 + 556) / 4
+                current: 1,
+                total: 4,
+                type: "variable",
+                category: "transporte",
+                paid: false,
+                cyclic: false,
+                dueDate: '2025-11-12',
+                paidDate: null
+            });
+        }
+    }
+
     currentMonthData = newMonthData;
     await saveData();
 }
