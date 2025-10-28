@@ -1291,25 +1291,23 @@ async function openAiModal() {
     try {
         const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
-        const financialDataContext = `
-        ## Dados Financeiros do Mês de ${getMonthName(currentMonth)}/${currentYear} (Formato JSON):
-        ${JSON.stringify(currentMonthData, null, 2)}
-        
-        ## Tarefa
-        A partir de agora, analise esses dados para responder às minhas perguntas.
-        `;
-
         chat = ai.chats.create({
             model: 'gemini-2.5-pro',
             config: {
                 systemInstruction: "Você é a 'IA Financeira', uma assistente especialista em finanças pessoais, amigável e perspicaz. Seu objetivo é ajudar o usuário a entender suas finanças, identificar padrões de gastos e encontrar oportunidades de economia. Suas respostas DEVEM ser em Português do Brasil. Baseie TODAS as suas respostas estritamente nos dados financeiros fornecidos no contexto da conversa. INSTRUÇÃO ESPECIAL E OBRIGATÓRIA: Sempre que identificar despesas contendo 'Marcia Brito' na descrição, você DEVE somar todos os valores e tratá-los como uma única dívida consolidada ao responder. Forneça conselhos claros, concisos e práticos. Utilize Markdown simples para formatação (ex: `**negrito**` e listas com `-`). Nunca inclua blocos de código JSON em suas respostas, a menos que seja explicitamente solicitado.",
             },
-            history: [
-                { role: "user", parts: [{ text: financialDataContext }] },
-            ]
         });
 
-        const initialPrompt = "Olá! Como minha assistente financeira, por favor, apresente-se brevemente, confirme que você analisou meus dados do mês atual e me diga como pode me ajudar a entender minhas finanças.";
+        const initialPrompt = `
+        ## Dados Financeiros do Mês de ${getMonthName(currentMonth)}/${currentYear} (Formato JSON):
+        ${JSON.stringify(currentMonthData, null, 2)}
+        
+        ## Tarefa
+        A partir de agora, analise esses dados para responder às minhas perguntas.
+
+        Olá! Como minha assistente financeira, por favor, apresente-se brevemente, confirme que você analisou meus dados do mês atual e me diga como pode me ajudar a entender minhas finanças.
+        `;
+
         const responseStream = await chat.sendMessageStream({ message: initialPrompt });
 
         const aiMessageEl = document.createElement('div');
