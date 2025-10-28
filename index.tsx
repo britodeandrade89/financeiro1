@@ -1271,18 +1271,21 @@ function deleteAccount(id) {
 async function openAiModal() {
     elements.aiModalTitle.innerHTML = `${ICONS.aiAnalysis} IA Financeira`;
     openModal(elements.aiModal);
-    
+
     elements.aiAnalysis.innerHTML = ''; // Clear previous chat
     renderInitialAiView();
-    
+
     // Disable form until chat is ready
     elements.aiChatInput.disabled = true;
     document.getElementById('aiChatSendBtn').disabled = true;
     elements.aiChatInput.placeholder = "Inicializando IA...";
 
+    // Ensure previous event listener is removed before adding a new one
+    elements.aiChatForm.removeEventListener('submit', handleAiChatSubmit);
+
     try {
         const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-        
+
         const financialDataContext = `
         ## Dados Financeiros do Mês de ${getMonthName(currentMonth)}/${currentYear} (Formato JSON):
         ${JSON.stringify(currentMonthData, null, 2)}
@@ -1291,21 +1294,42 @@ async function openAiModal() {
         A partir de agora, analise esses dados para responder às minhas perguntas.
         `;
 
-        const initialAiMessage = "Olá! Analisei seus dados financeiros. Como posso te ajudar a entender melhor suas finanças ou a planejar seus objetivos?";
-        
         chat = ai.chats.create({
             model: 'gemini-2.5-flash',
             config: {
-                systemInstruction: "You are a friendly and insightful financial assistant named 'IA Financeira'. Your goal is to help users understand their finances, identify spending patterns, and find opportunities to save money. Your answers must be in Portuguese (Brazil). Base your answers strictly on the financial data provided in the first message and the user's subsequent questions. Provide clear, concise, and actionable advice. Use simple Markdown for formatting (like `**bold**` for emphasis and lists with `-`). Do not output JSON code blocks unless explicitly asked.",
+                systemInstruction: "You are a friendly and insightful financial assistant named 'IA Financeira'. Your goal is to help users understand their finances, identify spending patterns, and find opportunities to save money. Your answers must be in Portuguese (Brazil). Base your answers strictly on the financial data provided in the first message and the user's subsequent questions. SPECIAL INSTRUCTION: Whenever you see expenses with 'Marcia Brito' in the description, you must aggregate them and treat them as a single debt category. Provide clear, concise, and actionable advice. Use simple Markdown for formatting (like `**bold**` for emphasis and lists with `-`). Do not output JSON code blocks unless explicitly asked.",
             },
             history: [
                 { role: "user", parts: [{ text: financialDataContext }] },
-                { role: "model", parts: [{ text: initialAiMessage }] }
             ]
         });
 
-        // Add the initial message to the UI
-        appendChatMessage('ai', initialAiMessage);
+        const initialView = document.getElementById('chat-initial-view');
+        if (initialView) initialView.remove();
+
+        const initialPrompt = "Olá! Apresente-se brevemente, confirme que analisou meus dados e diga que está pronto para ajudar.";
+        const responseStream = await chat.sendMessageStream({ message: initialPrompt });
+
+        const aiMessageEl = document.createElement('div');
+        aiMessageEl.className = `chat-message ai-message`;
+        const aiBubbleEl = document.createElement('div');
+        aiBubbleEl.className = 'message-bubble';
+        aiMessageEl.appendChild(aiBubbleEl);
+        elements.aiAnalysis.appendChild(aiMessageEl);
+        aiBubbleEl.innerHTML = `<div class="typing-indicator"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+        elements.aiAnalysis.scrollTop = elements.aiAnalysis.scrollHeight;
+
+        let fullResponseText = '';
+        let firstChunk = true;
+        for await (const chunk of responseStream) {
+            if (firstChunk) {
+                aiBubbleEl.innerHTML = '';
+                firstChunk = false;
+            }
+            fullResponseText += chunk.text;
+            aiBubbleEl.innerHTML = simpleMarkdownToHtml(fullResponseText);
+            elements.aiAnalysis.scrollTop = elements.aiAnalysis.scrollHeight;
+        }
 
         // Chat is ready
         elements.aiChatInput.disabled = false;
@@ -1313,14 +1337,17 @@ async function openAiModal() {
         elements.aiChatInput.placeholder = "Pergunte sobre suas finanças...";
         elements.aiChatInput.focus();
 
-    } catch(error) {
+    } catch (error) {
         console.error("Error initializing AI Chat:", error);
+        const initialView = document.getElementById('chat-initial-view');
+        if (initialView) initialView.remove();
         appendChatMessage('ai', 'Ocorreu um erro ao inicializar a IA. Por favor, verifique sua conexão ou tente novamente mais tarde.');
         elements.aiChatInput.placeholder = "Erro ao conectar com a IA";
     }
 
     elements.aiChatForm.addEventListener('submit', handleAiChatSubmit);
 }
+
 
 function closeAiModal() {
     closeModal(elements.aiModal);
