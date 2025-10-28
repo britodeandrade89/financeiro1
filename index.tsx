@@ -1272,8 +1272,13 @@ async function openAiModal() {
     elements.aiModalTitle.innerHTML = `${ICONS.aiAnalysis} IA Financeira`;
     openModal(elements.aiModal);
 
-    elements.aiAnalysis.innerHTML = ''; // Clear previous chat
-    renderInitialAiView();
+    // Set a unified loading state
+    elements.aiAnalysis.innerHTML = `
+        <div id="ai-loading-state" class="loading">
+            <div class="spinner"></div>
+            <div>Analisando seus dados e preparando a IA...</div>
+        </div>
+    `;
 
     // Disable form until chat is ready
     elements.aiChatInput.disabled = true;
@@ -1295,19 +1300,16 @@ async function openAiModal() {
         `;
 
         chat = ai.chats.create({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.5-pro',
             config: {
-                systemInstruction: "You are a friendly and insightful financial assistant named 'IA Financeira'. Your goal is to help users understand their finances, identify spending patterns, and find opportunities to save money. Your answers must be in Portuguese (Brazil). Base your answers strictly on the financial data provided in the first message and the user's subsequent questions. SPECIAL INSTRUCTION: Whenever you see expenses with 'Marcia Brito' in the description, you must aggregate them and treat them as a single debt category. Provide clear, concise, and actionable advice. Use simple Markdown for formatting (like `**bold**` for emphasis and lists with `-`). Do not output JSON code blocks unless explicitly asked.",
+                systemInstruction: "Você é a 'IA Financeira', uma assistente especialista em finanças pessoais, amigável e perspicaz. Seu objetivo é ajudar o usuário a entender suas finanças, identificar padrões de gastos e encontrar oportunidades de economia. Suas respostas DEVEM ser em Português do Brasil. Baseie TODAS as suas respostas estritamente nos dados financeiros fornecidos no contexto da conversa. INSTRUÇÃO ESPECIAL E OBRIGATÓRIA: Sempre que identificar despesas contendo 'Marcia Brito' na descrição, você DEVE somar todos os valores e tratá-los como uma única dívida consolidada ao responder. Forneça conselhos claros, concisos e práticos. Utilize Markdown simples para formatação (ex: `**negrito**` e listas com `-`). Nunca inclua blocos de código JSON em suas respostas, a menos que seja explicitamente solicitado.",
             },
             history: [
                 { role: "user", parts: [{ text: financialDataContext }] },
             ]
         });
 
-        const initialView = document.getElementById('chat-initial-view');
-        if (initialView) initialView.remove();
-
-        const initialPrompt = "Olá! Apresente-se brevemente, confirme que analisou meus dados e diga que está pronto para ajudar.";
+        const initialPrompt = "Olá! Como minha assistente financeira, por favor, apresente-se brevemente, confirme que você analisou meus dados do mês atual e me diga como pode me ajudar a entender minhas finanças.";
         const responseStream = await chat.sendMessageStream({ message: initialPrompt });
 
         const aiMessageEl = document.createElement('div');
@@ -1315,15 +1317,15 @@ async function openAiModal() {
         const aiBubbleEl = document.createElement('div');
         aiBubbleEl.className = 'message-bubble';
         aiMessageEl.appendChild(aiBubbleEl);
-        elements.aiAnalysis.appendChild(aiMessageEl);
-        aiBubbleEl.innerHTML = `<div class="typing-indicator"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
-        elements.aiAnalysis.scrollTop = elements.aiAnalysis.scrollHeight;
-
+        
         let fullResponseText = '';
         let firstChunk = true;
         for await (const chunk of responseStream) {
             if (firstChunk) {
-                aiBubbleEl.innerHTML = '';
+                // On the first chunk, replace the loading state with the chart and message bubble
+                const pieChartHTML = createPieChart();
+                elements.aiAnalysis.innerHTML = pieChartHTML; // Render chart first
+                elements.aiAnalysis.appendChild(aiMessageEl); // Then append the message bubble
                 firstChunk = false;
             }
             fullResponseText += chunk.text;
@@ -1339,8 +1341,7 @@ async function openAiModal() {
 
     } catch (error) {
         console.error("Error initializing AI Chat:", error);
-        const initialView = document.getElementById('chat-initial-view');
-        if (initialView) initialView.remove();
+        elements.aiAnalysis.innerHTML = ''; // Clear loading state on error
         appendChatMessage('ai', 'Ocorreu um erro ao inicializar a IA. Por favor, verifique sua conexão ou tente novamente mais tarde.');
         elements.aiChatInput.placeholder = "Erro ao conectar com a IA";
     }
