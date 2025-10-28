@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { GoogleGenAI, Chat } from "@google/genai";
 
 // =================================================================================
 // ICONS & CATEGORIES
@@ -250,7 +251,7 @@ let currentMonth = new Date().getMonth() + 1;
 let currentYear = new Date().getFullYear();
 let deferredPrompt;
 let currentUser = null;
-let aiChatHistory = [];
+let chat: Chat | null = null;
 const FAMILY_ID = 'bispo-brito'; // Explicit family ID for shared data
 
 // =================================================================================
@@ -1267,18 +1268,64 @@ function deleteAccount(id) {
 // =================================================================================
 // AI ANALYSIS & CHAT
 // =================================================================================
-function openAiModal() {
+async function openAiModal() {
     elements.aiModalTitle.innerHTML = `${ICONS.aiAnalysis} IA Financeira`;
     openModal(elements.aiModal);
     
-    aiChatHistory = [];
+    elements.aiAnalysis.innerHTML = ''; // Clear previous chat
     renderInitialAiView();
+    
+    // Disable form until chat is ready
+    elements.aiChatInput.disabled = true;
+    document.getElementById('aiChatSendBtn').disabled = true;
+    elements.aiChatInput.placeholder = "Inicializando IA...";
+
+    try {
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        
+        const financialDataContext = `
+        ## Dados Financeiros do Mês de ${getMonthName(currentMonth)}/${currentYear} (Formato JSON):
+        ${JSON.stringify(currentMonthData, null, 2)}
+        
+        ## Tarefa
+        A partir de agora, analise esses dados para responder às minhas perguntas.
+        `;
+
+        const initialAiMessage = "Olá! Analisei seus dados financeiros. Como posso te ajudar a entender melhor suas finanças ou a planejar seus objetivos?";
+        
+        chat = ai.chats.create({
+            model: 'gemini-2.5-flash',
+            config: {
+                systemInstruction: "You are a friendly and insightful financial assistant named 'IA Financeira'. Your goal is to help users understand their finances, identify spending patterns, and find opportunities to save money. Your answers must be in Portuguese (Brazil). Base your answers strictly on the financial data provided in the first message and the user's subsequent questions. Provide clear, concise, and actionable advice. Use simple Markdown for formatting (like `**bold**` for emphasis and lists with `-`). Do not output JSON code blocks unless explicitly asked.",
+            },
+            history: [
+                { role: "user", parts: [{ text: financialDataContext }] },
+                { role: "model", parts: [{ text: initialAiMessage }] }
+            ]
+        });
+
+        // Add the initial message to the UI
+        appendChatMessage('ai', initialAiMessage);
+
+        // Chat is ready
+        elements.aiChatInput.disabled = false;
+        document.getElementById('aiChatSendBtn').disabled = false;
+        elements.aiChatInput.placeholder = "Pergunte sobre suas finanças...";
+        elements.aiChatInput.focus();
+
+    } catch(error) {
+        console.error("Error initializing AI Chat:", error);
+        appendChatMessage('ai', 'Ocorreu um erro ao inicializar a IA. Por favor, verifique sua conexão ou tente novamente mais tarde.');
+        elements.aiChatInput.placeholder = "Erro ao conectar com a IA";
+    }
+
     elements.aiChatForm.addEventListener('submit', handleAiChatSubmit);
 }
 
 function closeAiModal() {
     closeModal(elements.aiModal);
     elements.aiChatForm.removeEventListener('submit', handleAiChatSubmit);
+    chat = null; // Clean up chat session
 }
 
 function renderInitialAiView() {
@@ -1294,28 +1341,69 @@ function renderInitialAiView() {
 
 async function handleAiChatSubmit(event) {
     event.preventDefault();
+    if (!chat) {
+        appendChatMessage('ai', 'A sessão com a IA não foi iniciada. Por favor, feche e abra a janela novamente.');
+        return;
+    }
     const userInput = elements.aiChatInput.value.trim();
     if (!userInput) return;
 
     // Clear initial view if it exists
     const initialView = document.getElementById('chat-initial-view');
-    if(initialView) initialView.remove();
+    if (initialView) initialView.remove();
     
     appendChatMessage('user', userInput);
     elements.aiChatInput.value = '';
     
-    appendTypingIndicator();
+    const sendButton = document.getElementById('aiChatSendBtn');
+    elements.aiChatInput.disabled = true;
+    sendButton.disabled = true;
+    
+    // Create the AI message element and bubble for streaming
+    const aiMessageEl = document.createElement('div');
+    aiMessageEl.className = `chat-message ai-message`;
+    const aiBubbleEl = document.createElement('div');
+    aiBubbleEl.className = 'message-bubble';
+    aiMessageEl.appendChild(aiBubbleEl);
+    elements.aiAnalysis.appendChild(aiMessageEl);
 
-    // Simulate a delay and show a message that the feature is disabled.
-    setTimeout(() => {
-        removeTypingIndicator();
-        appendChatMessage('ai', 'Desculpe, a funcionalidade de IA está temporariamente desativada.');
-    }, 800);
+    // Add a temporary typing indicator inside the bubble
+    aiBubbleEl.innerHTML = `
+        <div class="typing-indicator">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    `;
+    elements.aiAnalysis.scrollTop = elements.aiAnalysis.scrollHeight;
+
+    try {
+        const responseStream = await chat.sendMessageStream({ message: userInput });
+        
+        let fullResponseText = '';
+        let firstChunk = true;
+
+        for await (const chunk of responseStream) {
+            if (firstChunk) {
+                aiBubbleEl.innerHTML = ''; // Clear the typing indicator
+                firstChunk = false;
+            }
+            fullResponseText += chunk.text;
+            aiBubbleEl.innerHTML = simpleMarkdownToHtml(fullResponseText);
+            elements.aiAnalysis.scrollTop = elements.aiAnalysis.scrollHeight;
+        }
+        
+    } catch(error) {
+        console.error("AI chat error:", error);
+        aiBubbleEl.innerHTML = simpleMarkdownToHtml('**Erro:** Desculpe, não consegui processar sua solicitação no momento. Tente novamente.');
+    } finally {
+        elements.aiChatInput.disabled = false;
+        sendButton.disabled = false;
+        elements.aiChatInput.focus();
+    }
 }
 
 function appendChatMessage(role, text) {
-    aiChatHistory.push({ role, text });
-    
     const messageEl = document.createElement('div');
     messageEl.className = `chat-message ${role}-message`;
 
@@ -1330,29 +1418,6 @@ function appendChatMessage(role, text) {
     // Scroll to bottom
     elements.aiAnalysis.scrollTop = elements.aiAnalysis.scrollHeight;
 }
-
-function appendTypingIndicator() {
-    const indicatorEl = document.createElement('div');
-    indicatorEl.id = 'typing-indicator';
-    indicatorEl.className = 'chat-message ai-message';
-    indicatorEl.innerHTML = `
-        <div class="message-bubble">
-            <div class="typing-indicator">
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-            </div>
-        </div>
-    `;
-    elements.aiAnalysis.appendChild(indicatorEl);
-    elements.aiAnalysis.scrollTop = elements.aiAnalysis.scrollHeight;
-}
-
-function removeTypingIndicator() {
-    const indicatorEl = document.getElementById('typing-indicator');
-    if (indicatorEl) indicatorEl.remove();
-}
-
 
 function createPieChart() {
     const allExpenses = [...(currentMonthData.expenses || []), ...(currentMonthData.shoppingItems || [])];
