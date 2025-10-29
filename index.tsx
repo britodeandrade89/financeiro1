@@ -16,7 +16,7 @@ const ICONS = {
     shopping: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>`,
     calendar: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>`,
     info: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`,
-    aiAnalysis: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-1.2 0-2.4.6-3 1.7A3.6 3.6 0 0 0 8.3 9c.5 1.1 1.4 2 2.7 2s2.2-.9 2.7-2c.1-.4.2-.8.3-1.3.6-1.1 0-2.3-1-3.1-.3-.2-.6-.3-1-.3z"></path><path d="M12 21c-1.2 0-2.4-.6-3-1.7A3.6 3.6 0 0 1 8.3 15c.5-1.1 1.4-2 2.7-2s2.2.9 2.7 2c.1.4.2.8.3 1.3.6 1.1 0 2.3-1 3.1-.3.2-.6.3-1 .3z"></path><path d="M3 12c0-1.2.6-2.4 1.7-3A3.6 3.6 0 0 1 9 8.3c1.1.5 2 1.4 2 2.7s-.9 2.2-2 2.7c-.4.1-.8.2-1.3.3-1.1.6-2.3 0-3.1-1-.2-.3-.3-.6-.3-1z"></path><path d="M21 12c0-1.2-.6-2.4-1.7-3A3.6 3.6 0 0 0 15 8.3c-1.1.5-2 1.4-2 2.7s.9 2.2 2 2.7c.4.1.8.2 1.3.3 1.1.6 2.3 0 3.1-1 .2-.3.3-.6-.3-1z"></path></svg>`,
+    aiAnalysis: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-1.2 0-2.4.6-3 1.7A3.6 3.6 0 0 0 8.3 9c.5 1.1 1.4 2 2.7 2s2.2-.9 2.7-2c.1-.4.2-.8.3-1.3.6-1.1 0-2.3-1-3.1-.3-.2-.6-.3-1-.3z"></path><path d="M12 21c-1.2 0-2.4-.6-3-1.7A3.6 3.6 0 0 1 8.3 15c.5-1.1 1.4-2 2.7-2s2.2.9 2.7 2c.1.4.2.8.3 1.3.6 1.1 0 2.3-1 3.1-.3-.2-.6-.3-1 .3z"></path><path d="M3 12c0-1.2.6-2.4 1.7-3A3.6 3.6 0 0 1 9 8.3c1.1.5 2 1.4 2 2.7s-.9 2.2-2 2.7c-.4.1-.8.2-1.3.3-1.1.6-2.3 0-3.1-1-.2-.3-.3-.6-.3-1z"></path><path d="M21 12c0-1.2-.6-2.4-1.7-3A3.6 3.6 0 0 0 15 8.3c-1.1.5-2 1.4-2 2.7s.9 2.2 2 2.7c.4.1.8.2 1.3.3 1.1.6 2.3 0 3.1-1 .2-.3.3-.6-.3-1z"></path></svg>`,
     lightbulb: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.09 16.05a2.41 2.41 0 0 1-2.41-2.41V10a4.69 4.69 0 0 0-9.38 0v3.64a2.41 2.41 0 0 1-2.41 2.41"></path><path d="M8.5 16.05V18a1.5 1.5 0 0 0 3 0v-1.95"></path><path d="M15.09 16.05a2.41 2.41 0 0 0 2.41-2.41V10a4.69 4.69 0 0 1 9.38 0v3.64a2.41 2.41 0 0 0 2.41 2.41"></path><path d="M17.5 16.05V18a1.5 1.5 0 0 1-3 0v-1.95"></path></svg>`,
     close: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`,
     goal: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>`
@@ -242,8 +242,12 @@ mockFirebase.firestore.data = JSON.parse(localStorage.getItem('firestoreMock')) 
 
 
 // =================================================================================
-// STATE
+// STATE & AI INSTANCE
 // =================================================================================
+const API_KEY = "AIzaSyAKesjiHKTQczXIbTzAmNd4sBDCXOp9BMQ";
+const ai = new GoogleGenAI({ apiKey: API_KEY });
+let chat: Chat | null = null;
+
 let currentMonthData = { incomes: [], expenses: [], shoppingItems: [], goals: [], bankAccounts: [] };
 let firestoreUnsubscribe = null; // Para gerenciar o listener em tempo real
 let currentModalType = '';
@@ -251,7 +255,6 @@ let currentMonth = new Date().getMonth() + 1;
 let currentYear = new Date().getFullYear();
 let deferredPrompt;
 let currentUser = null;
-let chat: Chat | null = null;
 const FAMILY_ID = 'bispo-brito'; // Explicit family ID for shared data
 
 // =================================================================================
@@ -279,7 +282,6 @@ const elements = {
     aiModal: document.getElementById('aiModal'),
     goalModal: document.getElementById('goalModal'),
     accountModal: document.getElementById('accountModal'),
-    apiKeyModal: document.getElementById('apiKeyModal'),
     // Add Modal
     addModalTitle: document.getElementById('addModalTitle'),
     addForm: document.getElementById('addForm'),
@@ -309,9 +311,6 @@ const elements = {
     aiModalTitle: document.getElementById('aiModalTitle'),
     aiChatForm: document.getElementById('aiChatForm'),
     aiChatInput: document.getElementById('aiChatInput'),
-    // API Key Modal
-    apiKeyForm: document.getElementById('apiKeyForm'),
-    apiKeyInput: document.getElementById('apiKeyInput'),
     // Goal Modal
     goalModalTitle: document.getElementById('goalModalTitle'),
     goalForm: document.getElementById('goalForm'),
@@ -1297,7 +1296,7 @@ function deleteAccount(id) {
 // =================================================================================
 // AI ANALYSIS & CHAT
 // =================================================================================
-async function initializeAndStartChat(apiKey) {
+async function initializeAndStartChat() {
     openModal(elements.aiModal);
     elements.aiModalTitle.innerHTML = `${ICONS.aiAnalysis} IA Financeira`;
     elements.aiAnalysis.innerHTML = `
@@ -1313,8 +1312,6 @@ async function initializeAndStartChat(apiKey) {
     elements.aiChatForm.removeEventListener('submit', handleAiChatSubmit);
 
     try {
-        const ai = new GoogleGenAI({ apiKey });
-
         chat = ai.chats.create({
             model: 'gemini-2.5-pro',
             config: {
@@ -1361,9 +1358,8 @@ async function initializeAndStartChat(apiKey) {
 
     } catch (error) {
         console.error("Error initializing AI Chat:", error);
-        sessionStorage.removeItem('geminiApiKey'); // Clear invalid key
         elements.aiAnalysis.innerHTML = '';
-        appendChatMessage('ai', 'Ocorreu um erro ao inicializar a IA. Verifique sua chave de API e a conexão, ou tente novamente mais tarde.');
+        appendChatMessage('ai', 'Ocorreu um erro ao inicializar a IA. Verifique sua conexão ou tente novamente mais tarde.');
         elements.aiChatInput.placeholder = "Erro ao conectar com a IA";
     }
 
@@ -1371,22 +1367,7 @@ async function initializeAndStartChat(apiKey) {
 }
 
 async function openAiModal() {
-    const apiKey = sessionStorage.getItem('geminiApiKey');
-    if (!apiKey) {
-        openModal(elements.apiKeyModal);
-        return;
-    }
-    await initializeAndStartChat(apiKey);
-}
-
-async function handleApiKeySubmit(event) {
-    event.preventDefault();
-    const apiKey = elements.apiKeyInput.value.trim();
-    if (apiKey) {
-        sessionStorage.setItem('geminiApiKey', apiKey);
-        closeModal(elements.apiKeyModal);
-        await initializeAndStartChat(apiKey);
-    }
+    await initializeAndStartChat();
 }
 
 function closeAiModal() {
@@ -1697,7 +1678,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     elements.editForm.addEventListener('submit', handleEditItem);
     elements.goalForm.addEventListener('submit', handleSaveGoal);
     elements.accountForm.addEventListener('submit', handleSaveAccount);
-    elements.apiKeyForm.addEventListener('submit', handleApiKeySubmit);
 
     // Dynamic form logic
     document.getElementById('type').addEventListener('change', (e) => {
