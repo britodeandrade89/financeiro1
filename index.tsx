@@ -544,32 +544,33 @@ async function createNewMonthData() {
             baseData = previousSavedLocal.data;
         } else if (prevMonth === 10 && prevYear === 2025) {
             baseData = octoberData;
-        } else {
-             baseData = { incomes: [], expenses: [], shoppingItems: [], goals: [], bankAccounts: [] };
         }
+    }
+    
+    if (!baseData || typeof baseData !== 'object') {
+        baseData = { incomes: [], expenses: [], shoppingItems: [], goals: [], bankAccounts: [] };
     }
     
     const newMonthData = {
         incomes: [],
         expenses: [],
         shoppingItems: [],
-        goals: [], // Start with empty goals, to be populated by new logic
-        bankAccounts: JSON.parse(JSON.stringify(baseData.bankAccounts || [])) // Carry over bank accounts
+        goals: [],
+        bankAccounts: JSON.parse(JSON.stringify(baseData.bankAccounts || []))
     };
 
     // 1. Generate new incomes with updated values
     newMonthData.incomes.push(
-        { id: `inc_salario_marcelly_${Date.now()}`, description: 'SALARIO MARCELLY', amount: 3349.92, paid: true },
-        { id: `inc_salario_andre_${Date.now()}`, description: 'SALARIO ANDRE', amount: 3349.92, paid: true },
-        { id: `inc_mumbuca_marcelly_${Date.now()}`, description: 'MUMBUCA MARCELLY', amount: 650.00, paid: true },
-        { id: `inc_mumbuca_andre_${Date.now()}`, description: 'MUMBUCA ANDRE', amount: 650.00, paid: true }
+        { id: `inc_salario_marcelly_${Date.now()}`, description: 'SALARIO MARCELLY', amount: 3349.92, paid: false },
+        { id: `inc_salario_andre_${Date.now()}`, description: 'SALARIO ANDRE', amount: 3349.92, paid: false },
+        { id: `inc_mumbuca_marcelly_${Date.now()}`, description: 'MUMBUCA MARCELLY', amount: 650.00, paid: false },
+        { id: `inc_mumbuca_andre_${Date.now()}`, description: 'MUMBUCA ANDRE', amount: 650.00, paid: false }
     );
     
-    // Special income for December (13th salary)
     if (currentYear === 2025 && currentMonth === 12) {
         newMonthData.incomes.push(
-            { id: `inc_13_marcelly_${Date.now()}`, description: 'SEGUNDA PARCELA 13º SALÁRIO MARCELLY', amount: 3349.92, paid: false },
-            { id: `inc_13_andre_${Date.now()}`, description: 'SEGUNDA PARCELA 13º SALÁRIO ANDRÉ', amount: 3349.92, paid: false }
+            { id: `inc_13_marcelly_${Date.now()}`, description: 'SEGUNDA PARCELA 13º SALÁRIO MARCELLY', amount: 3349.92 / 2, paid: false },
+            { id: `inc_13_andre_${Date.now()}`, description: 'SEGUNDA PARCELA 13º SALÁRIO ANDRÉ', amount: 3349.92 / 2, paid: false }
         );
     }
 
@@ -580,7 +581,7 @@ async function createNewMonthData() {
         { id: `goal_transporte_${Date.now()}`, category: 'transporte', amount: totalMumbuca * 0.30 }
     );
 
-    const travelInvestment = baseData.expenses.find(e => e.description.toUpperCase().includes('INVESTIMENTO PARA VIAGEM'));
+    const travelInvestment = (baseData.expenses || []).find(e => e.description.toUpperCase().includes('INVESTIMENTO PARA VIAGEM'));
     if (travelInvestment) {
         newMonthData.goals.push({ id: `goal_investimento_${Date.now()}`, category: 'investimento', amount: travelInvestment.amount });
     }
@@ -592,7 +593,7 @@ async function createNewMonthData() {
 
     
     // 3. Carry over recurring and installment expenses
-    baseData.expenses.forEach(expense => {
+    (baseData.expenses || []).forEach(expense => {
         let shouldAdd = false;
         const newExpense = { ...expense, id: `exp_${Date.now()}_${Math.random()}`, paid: false, paidDate: null };
         
@@ -600,7 +601,7 @@ async function createNewMonthData() {
             newExpense.current += 1;
             shouldAdd = true;
         } else if (expense.cyclic) {
-            newExpense.current = 1; // Reset for cyclic expenses
+            newExpense.current = 1;
             shouldAdd = true;
         }
 
@@ -626,6 +627,7 @@ async function createNewMonthData() {
 
     currentMonthData = newMonthData;
     await saveData();
+    updateUI();
 }
 
 function changeMonth(offset) {
