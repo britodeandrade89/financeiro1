@@ -671,8 +671,22 @@ function updateUIForAuthState(user) {
         document.getElementById('logout-button').addEventListener('click', handleLogout);
         
         if (!sessionStorage.getItem('has_loaded_once')) {
-            currentMonth = 10;
-            currentYear = 2025;
+            const today = new Date();
+            const dayOfMonth = today.getDate();
+            let initialMonth = today.getMonth() + 1;
+            let initialYear = today.getFullYear();
+
+            // After day 25, automatically show the next month's plan.
+            if (dayOfMonth > 25) {
+                initialMonth++;
+                if (initialMonth > 12) {
+                    initialMonth = 1;
+                    initialYear++;
+                }
+            }
+            
+            currentMonth = initialMonth;
+            currentYear = initialYear;
             sessionStorage.setItem('has_loaded_once', 'true');
         }
 
