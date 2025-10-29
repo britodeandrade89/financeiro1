@@ -1,5 +1,5 @@
 // @ts-nocheck
-const CACHE_NAME = 'finance-app-v8'; // Incremented version to apply the fix
+const CACHE_NAME = 'finance-app-v9'; // Incremented version to force update and new caching strategy.
 
 // All assets needed for the app shell to function offline.
 const ASSETS_TO_CACHE = [
@@ -46,7 +46,7 @@ self.addEventListener('activate', evt => {
     );
 });
 
-// 3. Fetch Event: Cache-first, with network fallback and offline shell for navigation
+// 3. Fetch Event: Use "Network falling back to cache" strategy
 self.addEventListener('fetch', evt => {
     // We only handle GET requests
     if (evt.request.method !== 'GET') {
@@ -54,32 +54,25 @@ self.addEventListener('fetch', evt => {
     }
 
     evt.respondWith(
-        caches.match(evt.request).then(cachedResponse => {
-            // If we have a cached response, return it.
-            if (cachedResponse) {
-                return cachedResponse;
-            }
-
-            // If not, fetch from the network.
-            return fetch(evt.request).then(networkResponse => {
-                    // If the fetch is successful, cache the response and return it.
-                    if (networkResponse && networkResponse.status === 200) {
-                        const responseToCache = networkResponse.clone();
-                        caches.open(CACHE_NAME).then(cache => {
-                            cache.put(evt.request, responseToCache);
-                        });
-                    }
-                    return networkResponse;
-                })
-                .catch(error => {
-                    console.log('[Service Worker] Network request failed. Serving fallback.', error);
-                    // For navigation requests (i.e., loading a page), if the network fails,
-                    // serve the main index.html from the cache. This prevents 404 errors when offline.
-                    if (evt.request.mode === 'navigate') {
+        fetch(evt.request)
+            .then(networkResponse => {
+                // If the network request is successful, clone it, cache it, and return it.
+                const responseToCache = networkResponse.clone();
+                caches.open(CACHE_NAME).then(cache => {
+                    cache.put(evt.request, responseToCache);
+                });
+                return networkResponse;
+            })
+            .catch(() => {
+                // If the network request fails, try to serve the response from the cache.
+                return caches.match(evt.request).then(cachedResponse => {
+                    // If it's a navigation request and the file is not in cache, return the main index page as a fallback.
+                    if (!cachedResponse && evt.request.mode === 'navigate') {
                         return caches.match('/index.html');
                     }
+                    return cachedResponse;
                 });
-        })
+            })
     );
 });
 
