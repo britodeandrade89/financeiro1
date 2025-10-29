@@ -13,13 +13,14 @@ const ICONS = {
     expense: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5l-5 5-5-5M17 19l-5-5-5-5"></path></svg>`,
     fixed: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>`,
     variable: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>`,
-    shopping: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>`,
+    shopping: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>`,
     calendar: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>`,
     info: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`,
     aiAnalysis: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-1.2 0-2.4.6-3 1.7A3.6 3.6 0 0 0 8.3 9c.5 1.1 1.4 2 2.7 2s2.2-.9 2.7-2c.1-.4.2-.8.3-1.3.6-1.1 0-2.3-1-3.1-.3-.2-.6-.3-1-.3z"></path><path d="M12 21c-1.2 0-2.4-.6-3-1.7A3.6 3.6 0 0 1 8.3 15c.5-1.1 1.4-2 2.7-2s2.2.9 2.7 2c.1.4.2.8.3 1.3.6 1.1 0 2.3-1 3.1-.3-.2-.6-.3-1 .3z"></path><path d="M3 12c0-1.2.6-2.4 1.7-3A3.6 3.6 0 0 1 9 8.3c1.1.5 2 1.4 2 2.7s-.9 2.2-2 2.7c-.4.1-.8.2-1.3.3-1.1.6-2.3 0-3.1-1-.2-.3-.3-.6-.3-1z"></path><path d="M21 12c0-1.2-.6-2.4-1.7-3A3.6 3.6 0 0 0 15 8.3c-1.1.5-2 1.4-2 2.7s.9 2.2 2 2.7c.4.1.8.2 1.3.3 1.1.6 2.3 0 3.1-1 .2-.3.3-.6-.3-1z"></path></svg>`,
     lightbulb: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.09 16.05a2.41 2.41 0 0 1-2.41-2.41V10a4.69 4.69 0 0 0-9.38 0v3.64a2.41 2.41 0 0 1-2.41 2.41"></path><path d="M8.5 16.05V18a1.5 1.5 0 0 0 3 0v-1.95"></path><path d="M15.09 16.05a2.41 2.41 0 0 0 2.41-2.41V10a4.69 4.69 0 0 1 9.38 0v3.64a2.41 2.41 0 0 0 2.41 2.41"></path><path d="M17.5 16.05V18a1.5 1.5 0 0 1-3 0v-1.95"></path></svg>`,
     close: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`,
-    goal: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>`
+    goal: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>`,
+    investment: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12V8a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v4"></path><path d="M4 12v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6"></path><path d="M12 12h.01"></path></svg>`
 };
 
 const SPENDING_CATEGORIES = {
@@ -31,6 +32,8 @@ const SPENDING_CATEGORIES = {
     educacao: { name: 'Educação', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10v6M12 2v14M8 16L4 14M16 16l4-2M12 22a4 4 0 0 0 4-4H8a4 4 0 0 0 4 4z"></path></svg>` },
     dividas: { name: 'Dívidas', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>` },
     pessoal: { name: 'Pessoal', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M12 16.5c-3.5 0-6.5 2-6.5 4.5h13c0-2.5-3-4.5-6.5-4.5z"></path><path d="M20.5 12c.3 0 .5.2.5.5v3c0 .3-.2.5-.5.5s-.5-.2-.5-.5v-3c0-.3.2-.5.5-.5z"></path><path d="M3.5 12c.3 0 .5.2.5.5v3c0 .3-.2.5-.5.5s-.5-.2-.5-.5v-3c0-.3.2-.5.5-.5z"></path></svg>` },
+    investimento: { name: 'Investimentos', icon: ICONS.investment },
+    shopping: { name: 'Compras', icon: ICONS.shopping },
     outros: { name: 'Outros', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>` },
 };
 
@@ -56,7 +59,7 @@ const octoberData = {
         { id: "exp7", description: "CONTA DA VIVO - ANDRÉ", amount: 35.00, current: 9, total: 12, type: "fixed", category: "moradia", paid: false, cyclic: true, dueDate: '2025-10-20' },
         { id: "exp8", description: "CONTA DA VIVO - MARCELLY", amount: 59.00, current: 9, total: 12, type: "fixed", category: "moradia", paid: false, cyclic: true, dueDate: '2025-10-20' },
         { id: "exp9", description: "EMPRÉSTIMO PARA ACABAR DE PASSAR ABRIL (MARCIA BRITO)", amount: 220.00, current: 5, total: 6, type: "fixed", category: "dividas", paid: false, cyclic: false, dueDate: '2025-10-25' },
-        { id: "exp10", description: "INVESTIMENTO PARA VIAGEM DE FÉRIAS (BANCO INTER)", amount: 600.00, current: 1, total: 5, type: "fixed", category: "lazer", paid: true, cyclic: false, dueDate: '2025-10-05', paidDate: '2025-10-02' },
+        { id: "exp10", description: "INVESTIMENTO PARA VIAGEM DE FÉRIAS (BANCO INTER)", amount: 600.00, current: 1, total: 5, type: "fixed", category: "investimento", paid: true, cyclic: false, dueDate: '2025-10-05', paidDate: '2025-10-02' },
         { id: "exp11", description: "GYMPASS ANDRÉ", amount: 70.00, current: 9, total: 12, type: "fixed", category: "saude", paid: true, cyclic: true, dueDate: '2025-10-12', paidDate: '2025-10-11' },
         { id: "exp12", description: "GYMPASS MARCELLY", amount: 70.00, current: 9, total: 12, type: "fixed", category: "saude", paid: true, cyclic: true, dueDate: '2025-10-12', paidDate: '2025-10-11' },
         { id: "exp13", description: "INTERMÉDICA DO ANDRÉ", amount: 123.00, current: 9, total: 12, type: "fixed", category: "saude", paid: true, cyclic: true, dueDate: '2025-10-15', paidDate: '2025-10-14' },
@@ -92,7 +95,7 @@ const octoberData = {
         { id: "goal_2", category: "saude", amount: 1200 },
         { id: "goal_3", category: "transporte", amount: 1000 },
         { id: "goal_4", category: "dividas", amount: 1500 },
-        { id: "goal_5", category: "lazer", amount: 600 },
+        { id: "goal_5", category: "investimento", amount: 600 },
     ],
     bankAccounts: [
         { id: "acc_1", name: "Conta Principal", balance: 1500.75 },
@@ -509,16 +512,15 @@ async function loadData() {
             const localData = await idb.get('months', monthKey);
             if (localData) {
                 currentMonthData = localData.data;
+                 await saveData(); // Re-sync local data if Firestore is empty
             } else if (currentMonth === 10 && currentYear === 2025) {
                 // This case handles loading the pre-seeded data for the first time
                 console.log("[Data] Initializing with October sample data.");
                 currentMonthData = JSON.parse(JSON.stringify(octoberData));
+                await saveData();
             } else {
                 await createNewMonthData();
-                return; 
             }
-            
-            await saveData();
         }
     });
 
@@ -551,21 +553,45 @@ async function createNewMonthData() {
         incomes: [],
         expenses: [],
         shoppingItems: [],
-        goals: JSON.parse(JSON.stringify(baseData.goals || [])), // Carry over goals
+        goals: [], // Start with empty goals, to be populated by new logic
         bankAccounts: JSON.parse(JSON.stringify(baseData.bankAccounts || [])) // Carry over bank accounts
     };
 
-    const recurringIncomes = baseData.incomes.filter(income => 
-        income.description.toLowerCase().includes('salario') || 
-        income.description.toLowerCase().includes('mumbuca')
+    // 1. Generate new incomes with updated values
+    newMonthData.incomes.push(
+        { id: `inc_salario_marcelly_${Date.now()}`, description: 'SALARIO MARCELLY', amount: 3349.92, paid: true },
+        { id: `inc_salario_andre_${Date.now()}`, description: 'SALARIO ANDRE', amount: 3349.92, paid: true },
+        { id: `inc_mumbuca_marcelly_${Date.now()}`, description: 'MUMBUCA MARCELLY', amount: 650.00, paid: true },
+        { id: `inc_mumbuca_andre_${Date.now()}`, description: 'MUMBUCA ANDRE', amount: 650.00, paid: true }
+    );
+    
+    // Special income for December (13th salary)
+    if (currentYear === 2025 && currentMonth === 12) {
+        newMonthData.incomes.push(
+            { id: `inc_13_marcelly_${Date.now()}`, description: 'SEGUNDA PARCELA 13º SALÁRIO MARCELLY', amount: 3349.92, paid: false },
+            { id: `inc_13_andre_${Date.now()}`, description: 'SEGUNDA PARCELA 13º SALÁRIO ANDRÉ', amount: 3349.92, paid: false }
+        );
+    }
+
+    // 2. Generate new goals based on Mumbuca and investments
+    const totalMumbuca = 1300.00;
+    newMonthData.goals.push(
+        { id: `goal_shopping_${Date.now()}`, category: 'shopping', amount: totalMumbuca * 0.70 },
+        { id: `goal_transporte_${Date.now()}`, category: 'transporte', amount: totalMumbuca * 0.30 }
     );
 
-    newMonthData.incomes.push(...recurringIncomes.map(income => ({
-        ...income,
-        paid: true, // Salaries and mumbuca are always pre-paid
-        id: `inc_${Date.now()}_${Math.random()}`
-    })));
+    const travelInvestment = baseData.expenses.find(e => e.description.toUpperCase().includes('INVESTIMENTO PARA VIAGEM'));
+    if (travelInvestment) {
+        newMonthData.goals.push({ id: `goal_investimento_${Date.now()}`, category: 'investimento', amount: travelInvestment.amount });
+    }
     
+    const otherGoals = (baseData.goals || []).filter(g => 
+        g.category !== 'shopping' && g.category !== 'transporte' && g.category !== 'investimento'
+    );
+    newMonthData.goals.push(...JSON.parse(JSON.stringify(otherGoals)));
+
+    
+    // 3. Carry over recurring and installment expenses
     baseData.expenses.forEach(expense => {
         let shouldAdd = false;
         const newExpense = { ...expense, id: `exp_${Date.now()}_${Math.random()}`, paid: false, paidDate: null };
@@ -574,23 +600,20 @@ async function createNewMonthData() {
             newExpense.current += 1;
             shouldAdd = true;
         } else if (expense.cyclic) {
-            newExpense.current = 1;
+            newExpense.current = 1; // Reset for cyclic expenses
             shouldAdd = true;
         }
 
         if(shouldAdd) {
-            if (currentYear === 2025 && currentMonth === 10) {
-                newExpense.dueDate = '2025-10-05';
-            } else {
-                const newDate = new Date(newExpense.dueDate + 'T00:00:00');
-                newDate.setMonth(newDate.getMonth() + 1);
-                newExpense.dueDate = newDate.toISOString().split('T')[0];
-            }
+            const newDate = new Date(newExpense.dueDate + 'T00:00:00');
+            newDate.setMonth(newDate.getMonth() + 1);
+            newExpense.dueDate = newDate.toISOString().split('T')[0];
             newMonthData.expenses.push(newExpense);
         }
     });
 
-     baseData.shoppingItems
+    // 4. Carry over unpaid shopping items
+    (baseData.shoppingItems || [])
         .filter(item => !item.paid)
         .forEach(item => {
              newMonthData.shoppingItems.push({
@@ -600,31 +623,6 @@ async function createNewMonthData() {
                 paidDate: null,
             });
         });
-
-    // Specific adjustments for November 2025 as requested by the user
-    if (currentYear === 2025 && currentMonth === 11) {
-        // 1. Ensure vacation pay is removed (as per user request)
-        // Note: The main logic already excludes it, but this is an explicit safeguard.
-        newMonthData.incomes = newMonthData.incomes.filter(inc => !inc.description.toUpperCase().includes('FÉRIAS'));
-
-        // 2. Add the new car repair expense installment
-        const carRepairExists = newMonthData.expenses.some(e => e.description.includes("CONSERTO DE CARRO"));
-        if (!carRepairExists) {
-             newMonthData.expenses.push({
-                id: `exp_car_repair_${Date.now()}`,
-                description: "CONSERTO DE CARRO (MARCIA BRITO)",
-                amount: 361.75, // (891 + 556) / 4
-                current: 1,
-                total: 4,
-                type: "variable",
-                category: "transporte",
-                paid: false,
-                cyclic: false,
-                dueDate: '2025-11-12',
-                paidDate: null
-            });
-        }
-    }
 
     currentMonthData = newMonthData;
     await saveData();
@@ -1106,12 +1104,17 @@ function renderGoalsPage() {
         return;
     }
 
-    const allExpenses = [...(currentMonthData.expenses || []), ...(currentMonthData.shoppingItems || [])];
-
     goals.forEach(goal => {
-        const spent = allExpenses
-            .filter(e => e.category === goal.category)
-            .reduce((sum, e) => sum + e.amount, 0);
+        let spent = 0;
+        if (goal.category === 'shopping') {
+            // Special case for 'shopping' goal, which sums up items from the shopping list
+            spent = (currentMonthData.shoppingItems || []).reduce((sum, item) => sum + item.amount, 0);
+        } else {
+            // Standard goals are based on expense categories
+            spent = (currentMonthData.expenses || [])
+                .filter(e => e.category === goal.category)
+                .reduce((sum, e) => sum + e.amount, 0);
+        }
 
         const percentage = goal.amount > 0 ? (spent / goal.amount) * 100 : 0;
         const remaining = goal.amount - spent;
